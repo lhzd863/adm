@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.api.mapper.PermissionMapper">
+	<resultMap id="PermissionBean" type="PermissionBean">
+		<result column="user_id" property="user_id" javaType="String" jdbcType="DECIMAL" typeHandler="com.api.util.TypeHandlerInt2String"/>
+		<result column="user_name" property="user_name" javaType="String" jdbcType="VARCHAR" />
+		<result column="password" property="password" javaType="String" jdbcType="VARCHAR" />
+		<result column="show_name" property="show_name" javaType="String" jdbcType="VARCHAR" />
+		<result column="create_time" property="create_time" javaType="String" jdbcType="TIMESTAMP" typeHandler="com.api.util.TypeHandlerTimestamp2String"/>
+		<result column="update_time" property="update_time" javaType="String" jdbcType="TIMESTAMP" typeHandler="com.api.util.TypeHandlerTimestamp2String"/>
+		<result column="desc" property="desc" javaType="String" jdbcType="VARCHAR" />
+		<result column="enable" property="enable" javaType="String" jdbcType="VARCHAR" />
+		<result column="role_id" property="role_id" javaType="String" jdbcType="DECIMAL" typeHandler="com.api.util.TypeHandlerInt2String"/>
+		<result column="role_name" property="role_name" javaType="String" jdbcType="VARCHAR" />
+		<result column="id" property="id" javaType="String" jdbcType="DECIMAL" typeHandler="com.api.util.TypeHandlerInt2String" />
+		<result column="permission_id" property="permission_id" javaType="String" jdbcType="DECIMAL" typeHandler="com.api.util.TypeHandlerInt2String"/>
+		<result column="permission_name" property="permission_name" javaType="String" jdbcType="VARCHAR" />
+		<result column="permission" property="permission" javaType="String" jdbcType="VARCHAR" />
+		<result column="page_id" property="page_id" javaType="String" jdbcType="DECIMAL" typeHandler="com.api.util.TypeHandlerInt2String"/>
+		<result column="page_name" property="page_name" javaType="String" jdbcType="VARCHAR" />
+		<result column="token" property="token" javaType="String" jdbcType="VARCHAR" />
+		<result column="url" property="url" javaType="String" jdbcType="VARCHAR" />
+		<result column="parent" property="parent" javaType="String" jdbcType="DECIMAL" typeHandler="com.api.util.TypeHandlerInt2String"/>
+		<result column="feather" property="feather" javaType="String" jdbcType="VARCHAR" />
+		<result column="icon" property="icon" javaType="String" jdbcType="VARCHAR" />
+		<result column="page_title" property="page_title" javaType="String" jdbcType="VARCHAR" />
+		<result column="url_id" property="url_id" javaType="String" jdbcType="DECIMAL" typeHandler="com.api.util.TypeHandlerInt2String"/>		
+	</resultMap>
+	
+	<select id="checkPassword" resultMap="PermissionBean" parameterType="PermissionParameter" statementType="STATEMENT">
+		select id,user_name,show_name,desc,create_time,update_time
+		from  om_user
+		where user_name='${user_name}' 
+		and password='${password}'
+		and enable='1'
+		;
+	</select>
+	<!-- user info -->
+	<select id="getUser" resultMap="PermissionBean" parameterType="PermissionParameter" statementType="STATEMENT">
+		select id,user_name,password,show_name,desc,create_time,update_time,enable
+		from  om_user
+		where user_name='${user_name}' or 'admin'='${user_name}'
+		;
+	</select>
+	<insert id="addUser" parameterType="PermissionParameter" statementType="STATEMENT">
+        insert into om_user(user_name,password,show_name,desc) values('${user_name}','${password}','${show_name}','${desc}');
+    </insert>
+    <update id="updUser" parameterType="PermissionParameter" statementType="STATEMENT">
+        update om_user set user_name='${user_name}',password='${password}'
+              ,update_time=current_timestamp,show_name='${show_name}',desc='${desc}',enable='${enable}'
+        where id = '${id}';
+    </update>
+    <delete id="delUser" parameterType="PermissionParameter" statementType="STATEMENT">
+        delete from om_user where id='${id}';
+    </delete>
+	
+	<select id="getRole" resultMap="PermissionBean" parameterType="PermissionParameter" statementType="STATEMENT">
+		select id,role_name,desc,create_time,update_time,enable
+		from om_role 
+		where id in (
+          select role_id from om_user_role where user_id in (select id from om_user where user_name ='${user_name}')
+        ) or 'admin'='${user_name}' ;
+	</select>
+	<insert id="addRole" parameterType="PermissionParameter" statementType="STATEMENT">
+        insert into om_role(role_name) values('${user_name}');
+    </insert>
+    
+    <update id="updRole" parameterType="PermissionParameter" statementType="STATEMENT">
+        update om_role set role_name='${role_name}',desc='${desc}'
+              ,update_time=current_timestamp,enable='${enable}'
+        where id = '${id}';
+    </update>
+    <delete id="delRole" parameterType="PermissionParameter" statementType="STATEMENT">
+        delete from om_role where id='${id}';
+    </delete>
+	
+	<!-- token -->
+	<select id="getToken" resultMap="PermissionBean" parameterType="PermissionParameter" statementType="STATEMENT">
+		select id,token,create_time,update_time,enable
+        from om_token 
+        where enable='1' and token = '${token}';
+	</select>
+	<insert id="addToken" parameterType="PermissionParameter" statementType="STATEMENT">
+        insert into om_token(token) values('${token}');
+    </insert>
+    <delete id="delToken" parameterType="PermissionParameter" statementType="STATEMENT">
+        delete from om_token where token='${token}';
+    </delete>
+	<!-- permission -->
+	<select id="getUrl" resultMap="PermissionBean" parameterType="PermissionParameter" statementType="STATEMENT">
+		select id,url,page_name,permission_id,desc,create_time,update_time,enable
+        from om_url
+        where id in (
+        select url_id from om_right where user_id in (select user_id from om_user where user_name='${user_name}')
+           or role_id in (select role_id from om_role where role_id in (select role_id from om_user_role where user_id in (select user_id from om_user where user_name='${user_name}')))
+        ) or 'admin'='${user_name}';
+	</select>	
+	<insert id="addUrl" parameterType="PermissionParameter" statementType="STATEMENT">
+        insert into om_url (url,permission_id,page_name,desc)
+        values('${url}',${permission_id},${page_name},'${desc}');
+    </insert>
+    <update id="updUrl" parameterType="PermissionParameter" statementType="STATEMENT">
+        update om_url set permission_id=${permission_id},url='${url}',page_name='${page_name}'
+              ,update_time=current_timestamp,enable='${enable}'
+        where id = '${id}';
+    </update>
+    <delete id="delUrl" parameterType="PermissionParameter" statementType="STATEMENT">
+        delete from om_url where id='${id}';
+    </delete>
+    
+    <!-- user role mapping -->
+    <select id="getUserRole" resultMap="PermissionBean" parameterType="PermissionParameter" statementType="STATEMENT">
+		select id,user_id,role_id,create_time,update_time,enable
+		from om_user_role 
+		where user_id in (
+          select id from om_user where user_name ='${user_name}'
+        ) or 'admin'='${user_name}' ;
+	</select>
+	<insert id="addUserRole" parameterType="PermissionParameter" statementType="STATEMENT">
+        insert into om_user_role(user_id,role_id) values(${user_id},${role_id});
+    </insert>
+    
+    <update id="updUserRole" parameterType="PermissionParameter" statementType="STATEMENT">
+        update om_user_role set user_id=${user_id},role_id=${role_id}
+              ,update_time=current_timestamp,enable='${enable}'
+        where id = '${id}'
+    </update>
+    <delete id="delUserRole" parameterType="PermissionParameter" statementType="STATEMENT">
+        delete from om_user_role where id='${id}';
+    </delete>
+    
+    <!-- page -->
+    <select id="getPage" resultMap="PermissionBean" parameterType="PermissionParameter" statementType="STATEMENT">
+		select id,page_id,page_name,desc,feather,icon,page_title,parent,create_time,update_time,enable
+		from om_page 
+		where page_id in (
+          select page_id from om_user_page where user_id in (select id from om_user where user_name ='${user_name}')
+        ) or 'admin'='${user_name}'
+        order by page_id asc;
+	</select>
+	<insert id="addPage" parameterType="PermissionParameter" statementType="STATEMENT">
+        insert into om_page(page_id,page_name,desc,feather,icon,page_title,parent) 
+        values(${page_id},'${page_name}','${desc}','${feather}','${icon}','${page_title}',${parent});
+    </insert>
+    
+    <update id="updPage" parameterType="PermissionParameter" statementType="STATEMENT">
+        update om_page set page_id=${page_id},page_name='${page_name}',desc='${desc}'
+              ,feather='${feather}',icon='${icon}',page_title='${page_title}',parent=${parent}
+              ,update_time=current_timestamp,enable='${enable}'
+        where id = '${id}'
+    </update>
+    <delete id="delPage" parameterType="PermissionParameter" statementType="STATEMENT">
+        delete from om_page where id='${id}';
+    </delete>
+    
+    <!-- user page -->
+    <select id="getUserPage" resultMap="PermissionBean" parameterType="PermissionParameter" statementType="STATEMENT">
+		select id,page_id,user_id,role_id,create_time,update_time,enable 
+		from om_user_page 
+		where user_id in (select id from om_user where user_name ='${user_name}')
+		or 'admin'='${user_name}'
+		;
+	</select>
+	<insert id="addUserPage" parameterType="PermissionParameter" statementType="STATEMENT">
+        insert into om_user_page (page_id,user_id,role_id) values(${page_id},${user_id},${role_id});
+    </insert>
+    <update id="updUserPage" parameterType="PermissionParameter" statementType="STATEMENT">
+        update om_user_page set user_id=${user_id},page_id=${page_id},role_id='${role_id}'
+              ,update_time=current_timestamp,enable='${enable}'
+        where id = '${id}';
+    </update>
+    <delete id="delUserPage" parameterType="PermissionParameter" statementType="STATEMENT">
+        delete from om_user_page where id='${id}';
+    </delete>
+    
+    <!-- right -->
+    <select id="getRight" resultMap="PermissionBean" parameterType="PermissionParameter" statementType="STATEMENT">
+		select id,url_id,user_id,role_id,permission_id,create_time,update_time,enable 
+		from om_right 
+		where user_id in (select id from om_user where user_name ='${user_name}')
+		or role_id in (select role_id from om_user_role where user_id in (select id from om_user where user_name ='${user_name}'))
+		or 'admin'='${user_name}'
+		;
+	</select>
+	<insert id="addRight" parameterType="PermissionParameter" statementType="STATEMENT">
+        insert into om_right (url_id,user_id,role_id,permission_id) values(${url_id},${user_id},${role_id},${permission_id});
+    </insert>
+    <update id="updRight" parameterType="PermissionParameter" statementType="STATEMENT">
+        update om_right set url_id=${url_id},user_id=${user_id},role_id=${role_id},permission_id=${permission_id}
+              ,update_time=current_timestamp,enable='${enable}'
+        where id = '${id}'
+    </update>
+    <delete id="delRight" parameterType="PermissionParameter" statementType="STATEMENT">
+        delete from om_right where id='${id}';
+    </delete>
+    
+    <!-- user url -->
+    <select id="getUserUrl" resultMap="PermissionBean" parameterType="PermissionParameter" statementType="STATEMENT">
+		select id,url_id,user_id,role_id,desc,create_time,update_time,enable 
+		from om_user_url 
+		where user_id in (select id from om_user where user_name ='${user_name}')
+		or role_id in (select role_id from om_user_role where user_id in (select id from om_user where user_name ='${user_name}'))
+		or 'admin'='${user_name}'
+		;
+	</select>
+	<insert id="addUserUrl" parameterType="PermissionParameter" statementType="STATEMENT">
+        insert into om_user_url (url_id,user_id,role_id,desc) 
+        values(${url_id},${user_id},${role_id},'${desc}');
+    </insert>
+    <update id="updUserUrl" parameterType="PermissionParameter" statementType="STATEMENT">
+        update om_user_url set url_id='${url_id}',user_id=${user_id},role_id=${role_id},desc='${desc}'
+              ,update_time=current_timestamp,enable='${enable}'
+        where id = '${id}'
+    </update>
+    <delete id="delUserUrl" parameterType="PermissionParameter" statementType="STATEMENT">
+        delete from om_user_url where id='${id}';
+    </delete>
+
+</mapper>

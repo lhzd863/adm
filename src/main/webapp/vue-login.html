@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="dist/img/favicon.ico">
+
+    <title>Signin</title>
+	
+    <!-- Custom styles for this template -->
+	<link href="dist/css/dashboard.css" rel="stylesheet">
+    <link href="dist/css/vue-easytable-index.css" rel="stylesheet">
+    <link href="dist/css/element-ui/index.css" rel="stylesheet">
+	
+    <link href="dist/css/signin.css" rel="stylesheet">
+  </head>
+
+  <body class="text-center">
+    
+    <div class="login-box" id="my-main-contriner" >
+	    <h1 class="text-center">User Login</h1>
+         <el-row>
+        	<el-col :span="8">
+        	    <el-input id="name"  v-model="username" placeholder="请输入帐号">
+        		    <template slot="prepend">帐号</template>
+                </el-input> 
+        	</el-col>
+         </el-row>
+         <el-row>
+        	<el-col :span="8">
+        		<el-input id="password" v-model="userpassword" type="password" placeholder="请输入密码">
+                    <template slot="prepend">密码</template>
+        		</el-input>
+        	</el-col>
+         </el-row>
+         <el-row>
+        	<el-col :span="8">
+        		<el-button id="login" v-on:click="logincheck" style="width:100%" type="primary">登录</el-button>
+        	</el-col>
+         </el-row>
+    </div>
+  
+  
+    <script src="dist/js/jquery-3.2.1/jquery-3.2.1.min.js"></script>
+    <script src="dist/js/vendor/popper.min.js"></script>
+    <script src="dist/js/bootstrap-4.0.0/bootstrap.min.js"></script>
+
+    <script src="dist/js/vue/vue.js"></script>
+    <script src="dist/js/echarts-4.2.1/echarts.min.js"></script>
+    <script src="dist/js/element-ui/index.js"></script>
+    <script src="dist/js/vue/vue-easytable-index.js"></script>
+    <script src="dist/js/crypto-js/crypto-js.min.js"></script>
+
+    <script src="dist/js/vue-global-var.js"></script>
+    <script src="dist/js/vue-common-db.js"></script>
+    <script src="dist/js/vue-common-fun.js"></script>
+    <script src="dist/js/vue-login.js"></script>
+  </body>
+</html>

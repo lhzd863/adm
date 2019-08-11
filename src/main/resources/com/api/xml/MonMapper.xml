@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.api.mapper.MonMapper">
+	<resultMap id="MonBean" type="MonBean">
+		<result column="id" property="id" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="current1" property="current" jdbcType="VARCHAR" />
+		<result column="operator" property="operator" jdbcType="VARCHAR" />
+		<result column="alert" property="alert" jdbcType="VARCHAR" />
+		<result column="status1" property="status" jdbcType="VARCHAR" />
+		<result column="timestamp1" property="timestamp" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="enable" property="enable" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="getList" resultMap="MonBean" parameterType="MonParameter" statementType="STATEMENT">
+		select id,name,current1 ,operator,alert,status1,timestamp1,remark,enable 
+		from  alert_mon_status
+		where enable='1';
+	</select>
+
+</mapper>

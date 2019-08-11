@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.api.mapper.ConfMapper">
+	<resultMap id="ConfBean" type="ConfBean">
+		<result column="sys" property="sys" jdbcType="VARCHAR" />
+		<result column="key" property="key" jdbcType="VARCHAR" />
+		<result column="val" property="val" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="enable" property="enable" jdbcType="VARCHAR" />
+		<result column="changeflag" property="changeflag" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="getList" resultMap="ConfBean" parameterType="ConfParameter" statementType="STATEMENT">
+		select sys,key,val,remark,enable,'0' as changeflag
+		from  conf_all
+		;
+	</select>
+	
+	<insert id="addAll" parameterType="ConfParameter" statementType="STATEMENT">
+        insert into conf_all(sys,key,val,remark,enable) values('${sys}','${key}','${val}','${remark}','1');
+    </insert>
+    
+    <delete id="delAll" parameterType="ConfParameter" statementType="STATEMENT">
+        delete from conf_all where sys='${sys}' and key='${key}';
+    </delete>
+    
+    <update id="updAll" parameterType="ConfParameter" statementType="STATEMENT">
+        update conf_all set val='${val}',remark='${remark}',enable='${enable}'
+        where sys='${sys}' and key='${key}';
+    </update>
+
+</mapper>

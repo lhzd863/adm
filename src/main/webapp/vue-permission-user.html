@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="dist/img/favicon.ico">
+
+    <title>Config</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="dist/css/bootstrap-4.0.0/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="dist/css/dashboard.css" rel="stylesheet">
+    <link href="dist/css/vue-easytable-index.css" rel="stylesheet">
+    <link href="dist/css/element-ui/index.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <div id="my-main-contriner">
+        
+	    <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+          <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#" id="logonid">Adm</a>
+          <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+          <ul class="navbar-nav px-3">
+            <li class="nav-item text-nowrap">
+              <a class="nav-link" href="#" id="loginid">Sign out</a>
+            </li>
+          </ul>
+        </nav>
+		
+        <div class="container-fluid">
+          <div class="row">
+	      
+	        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+                <div class="sidebar-sticky">
+				    <div id="sidebarid"> </div>
+			    </div>
+            </nav>
+            
+            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+                  <h1 class="h2">User</h1>
+                </div>
+				<input type="button" class="btn-primary" data-toggle="modal" data-target="#myModal" value="添加"/>
+				<input type="button" class="btn-primary" value="删除" @click="deleteData()"/>
+				<input type="button" class="btn-primary" value="修改提交" @click="modifyData()"/>
+                <v-table
+                  :width="1100"
+                  :columns="columns"
+                  :table-data="tableData"
+                  :show-vertical-border="true"
+				  :select-all="selectALL"
+                  :select-change="selectChange"
+                  :select-group-change="selectGroupChange"
+				  :paging-index="(pageIndex-1)*pageSize"
+				  :cell-edit-done="cellEditDone"
+                ></v-table>
+                <v-pagination 
+				  :total="total" 
+				  :page-size="pageSize" 
+				  @page-change="pageChange1" 
+				  @page-size-change="pageSizeChange1"
+				  :layout="['total', 'prev', 'pager', 'next', 'sizer', 'jumper']"
+				></v-pagination>
+            </main>
+            
+          </div>
+        </div>
+		
+		<!--dialog start -->
+	    <!-- 模态框（Modal） -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel">添加用户</h4>
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal">
+                            <div class="form-group">
+							    <label class="control-label">UserName</label>
+								<input class="form-control" type="text" v-model="user_name" />
+							</div>
+                            <div class="form-group">
+							    <label class="control-label">Password</label>
+								<input class="form-control" type="text" v-model="password" />
+							</div>
+							<div class="form-group">
+							    <label class="control-label">ShowName</label>
+							    <input class="form-control" type="text"  v-model="show_name"/>
+							</div>
+							<div class="form-group">
+							    <label class="control-label">Desc</label>
+							    <input class="form-control" type="text"  v-model="desc"/>
+							</div>
+							<div class="form-group">
+							    <label class="radio-inline">
+                                  <input type="radio" value="1" v-model="enable">Enable
+                                </label>
+                                <label class="radio-inline">
+                                  <input type="radio" value="0" v-model="enable">Disable
+                                </label>
+							</div>
+                        </form>
+					</div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" @click="addData()" >提交</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+		
+    </div>
+	
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="dist/js/jquery-3.2.1/jquery-3.2.1.min.js"></script>
+    <script src="dist/js/vendor/popper.min.js"></script>
+    <script src="dist/js/bootstrap-4.0.0/bootstrap.min.js"></script>
+
+    <script src="dist/js/vue/vue.js"></script>
+    <script src="dist/js/echarts-4.2.1/echarts.min.js"></script>
+    <script src="dist/js/element-ui/index.js"></script>
+    <script src="dist/js/vue/vue-easytable-index.js"></script>
+    <script src="dist/js/crypto-js/crypto-js.min.js"></script>
+
+    <script src="dist/js/vue-global-var.js"></script>
+    <script src="dist/js/vue-common-db.js"></script>
+    <script src="dist/js/vue-common-fun.js"></script>
+    <script src="dist/js/vue-header.js"></script>
+	<script src="dist/js/vue-table-permission-user.js"></script>
+
+  </body>
+</html>
